@@ -32,7 +32,7 @@ const ACTIVE_KEY   = "hl-active-id";
 
 const WELCOME: Message = {
   role: "ai",
-  text: "How can I help you? Tell me which medical test or procedure you need — type it, tap a quick option, or use voice — and I'll show the best hospitals near you.",
+  text: "Tell me what test your doctor ordered and I'll find the best price near you. Type it, tap a quick option below, or use voice.",
 };
 
 function makeId() {

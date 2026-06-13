@@ -10,6 +10,7 @@ build/
 dist/
 
 # local env files
+.env.local
 .env
 .env.*
 !.env.local.example
