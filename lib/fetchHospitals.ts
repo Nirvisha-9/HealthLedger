@@ -164,7 +164,7 @@ interface OverpassElement {
   tags?: Record<string, string>;
 }
 
-const CACHE_KEY = "hl-hospitals-v1";
+const CACHE_KEY = "hl-hospitals-v2";
 
 export async function fetchNearbyHospitals(
   lat: number,
@@ -189,11 +189,36 @@ export async function fetchNearbyHospitals(
     "out center;",
   ].join("");
 
-  const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-  const res  = await fetch(url);
-  if (!res.ok) throw new Error(`Overpass ${res.status}`);
+  // Public Overpass servers are frequently rate-limited (HTTP 429/406/504).
+  // Try several mirrors in turn so a single overloaded server doesn't force
+  // us back to the tiny seed list.
+  const ENDPOINTS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+  ];
 
-  const data: { elements: OverpassElement[] } = await res.json();
+  let data: { elements: OverpassElement[] } | null = null;
+  let lastErr: unknown = null;
+
+  for (const endpoint of ENDPOINTS) {
+    try {
+      const res = await fetch(endpoint, {
+        method:  "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" },
+        body:    `data=${encodeURIComponent(query)}`,
+      });
+      if (!res.ok) { lastErr = new Error(`Overpass ${res.status} @ ${endpoint}`); continue; }
+      data = (await res.json()) as { elements: OverpassElement[] };
+      break;
+    } catch (err) {
+      lastErr = err;
+      continue;
+    }
+  }
+
+  if (!data) throw lastErr ?? new Error("All Overpass endpoints failed");
 
   const providers: Provider[] = data.elements
     .filter((el) => {
