@@ -1,0 +1,27 @@
+{
+  "userName": "Demo User",
+  "location": { "lat": 37.4, "lng": -122.1, "label": "Palo Alto, CA" },
+  "insurance": {
+    "planName": "Blue Shield PPO 1500",
+    "provider": "blue-shield",
+    "deductible": 1500,
+    "outOfPocketMax": 6000,
+    "coinsurance": 0.2
+  },
+  "visits": [
+    {
+      "id": "v1",
+      "date": "2026-03-12",
+      "procedure": "Blood Test (CBC)",
+      "provider": "City Medical Group - Diagnostics",
+      "amountPaid": 400
+    },
+    {
+      "id": "v2",
+      "date": "2026-05-08",
+      "procedure": "X-Ray - Knee",
+      "provider": "Valley Open Imaging",
+      "amountPaid": 1000
+    }
+  ]
+}
