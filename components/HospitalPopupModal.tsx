@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CostBreakdown } from "@/lib/costCalculator";
+import HospitalReviews from "./HospitalReviews";
 
 interface PopupProvider {
   id: string;
@@ -300,6 +301,9 @@ export default function HospitalPopupModal({ provider, planName, onClose, onChoo
             <span style={{ opacity: 0.6 }}>({reviewFlag.sourceCount} reviews)</span>
           </div>
         </div>
+
+        {/* ── Anonymous patient reviews ── */}
+        <HospitalReviews hospitalId={provider.id} hospitalName={provider.name} />
 
         {/* ── Buttons ── */}
         <div style={{
